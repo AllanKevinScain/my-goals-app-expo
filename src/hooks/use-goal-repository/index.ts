@@ -18,7 +18,6 @@ export function useGoalRepository() {
       throw error;
     }
   }
-
   function listAll() {
     try {
       return db.getAllSync<GoalResponseType>(`
@@ -31,7 +30,6 @@ export function useGoalRepository() {
       throw error;
     }
   }
-
   function get(id: number) {
     try {
       const statement = db.prepareSync(`
@@ -49,10 +47,20 @@ export function useGoalRepository() {
       throw error;
     }
   }
+  function deleteGoalById(id: number) {
+    try {
+      const statement = db.prepareSync(`DELETE FROM goals WHERE id = $id`);
+
+      statement.executeSync({ $id: id });
+    } catch (error) {
+      throw error;
+    }
+  }
 
   return {
     create,
     listAll,
     get,
+    deleteGoalById,
   };
 }

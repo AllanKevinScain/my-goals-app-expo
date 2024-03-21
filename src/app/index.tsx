@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { Alert, Keyboard, View } from "react-native";
 
 export default function Home() {
-  const { create, listAll } = useGoalRepository();
+  const { create, listAll, deleteGoalById } = useGoalRepository();
   const { findLatest } = useTransactionRepository();
 
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
@@ -83,6 +83,19 @@ export default function Home() {
     }
   }
 
+  async function handleDelete(id: string) {
+    try {
+      const idAsNumber = Number(id);
+      if (isNaN(idAsNumber)) return Alert.alert("Erro", "Valor inválido.");
+
+      deleteGoalById(idAsNumber);
+      fetchGoals();
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível excluir.");
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     fetchGoals();
     fetchTransactions();
@@ -99,6 +112,7 @@ export default function Home() {
         goals={goals}
         onAdd={handleBottomSheetOpen}
         onPress={handleDetails}
+        onDeleteGoal={handleDelete}
       />
 
       <Transactions transactions={transactions} />

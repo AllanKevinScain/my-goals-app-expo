@@ -4,14 +4,14 @@ import { currencyFormat } from "@/utils";
 import { GoalProps } from "./goals.type";
 
 export const Item: React.FC<GoalProps> = (props) => {
-  const { goal, ...rest } = props;
+  const { goal, onDeleteGoal, ...rest } = props;
   const percentage = (goal.current / goal.total) * 100;
   const width = percentage > 100 ? 100 : percentage;
   const value = percentage.toFixed(0) + "%";
 
   return (
     <TouchableOpacity
-      className="h-44 w-40 bg-gray-500 rounded-lg p-4"
+      className="w-40 bg-gray-500 rounded-lg p-4"
       activeOpacity={0.7}
       {...rest}
     >
@@ -41,6 +41,13 @@ export const Item: React.FC<GoalProps> = (props) => {
           <Text className="text-white text-xs font-semiBold mx-5">{value}</Text>
         )}
       </View>
+
+      <TouchableOpacity
+        className="flex flex-row justify-center bg-red-500 rounded-lg mt-2 p-2"
+        onPress={onDeleteGoal}
+      >
+        <Text>Excluir Meta</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

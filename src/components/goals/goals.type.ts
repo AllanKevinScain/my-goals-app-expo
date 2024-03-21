@@ -8,6 +8,7 @@ export type GoalType = {
 
 export interface GoalProps extends TouchableOpacityProps {
   goal: GoalType;
+  onDeleteGoal: () => void;
 }
 
 export type GoalsType = {
@@ -20,5 +21,6 @@ export type GoalsType = {
 export interface GoalsProps {
   goals: GoalsType[];
   onPress: (id: string) => void;
+  onDeleteGoal: (id: string) => void;
   onAdd: () => void;
 }

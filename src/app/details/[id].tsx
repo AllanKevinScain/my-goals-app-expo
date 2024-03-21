@@ -16,7 +16,7 @@ import {
   Transactions,
 } from "@/components";
 import { useGoalRepository, useTransactionRepository } from "@/hooks";
-import { currencyFormat, mocks } from "@/utils";
+import { currencyFormat } from "@/utils";
 import dayjs from "dayjs";
 
 export default function Details() {
