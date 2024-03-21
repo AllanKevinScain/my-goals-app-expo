@@ -1,9 +1,9 @@
 import { ScrollView, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { Goal } from "@/components";
 import { colors } from "@/styles";
 import { GoalsProps } from "./goals.type";
+import { Item } from "./item";
 
 export const Goals: React.FC<GoalsProps> = (props) => {
   const { goals, onAdd, onPress } = props;
@@ -24,7 +24,7 @@ export const Goals: React.FC<GoalsProps> = (props) => {
       </TouchableOpacity>
 
       {goals.map(({ id, name, current, total }) => (
-        <Goal
+        <Item
           key={id}
           goal={{ name, current, total }}
           onPress={() => onPress(id)}

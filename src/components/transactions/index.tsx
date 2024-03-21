@@ -1,7 +1,6 @@
 import { FlatList, Text, View } from "react-native";
-
-import { Transaction } from "@/components";
 import { TransactionsProps } from "./transactions.type";
+import { Item } from "./item";
 
 export const Transactions: React.FC<TransactionsProps> = (props) => {
   const { transactions } = props;
@@ -14,7 +13,7 @@ export const Transactions: React.FC<TransactionsProps> = (props) => {
 
       <FlatList
         data={transactions}
-        renderItem={({ item }) => <Transaction transaction={item} />}
+        renderItem={({ item }) => <Item transaction={item} />}
         contentContainerClassName="py-6 gap-4"
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (

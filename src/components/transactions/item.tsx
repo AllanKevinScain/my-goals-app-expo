@@ -2,9 +2,9 @@ import { Pressable, Text } from "react-native";
 
 import { currencyFormat } from "@/utils";
 import { colors } from "@/styles";
-import { TransactionProps } from "./transaction.type";
+import { TransactionProps } from "./transactions.type";
 
-export const Transaction: React.FC<TransactionProps> = (props) => {
+export const Item: React.FC<TransactionProps> = (props) => {
   const { transaction, ...rest } = props;
 
   return (

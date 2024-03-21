@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { Alert, Keyboard, View } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
 import Bottom from "@gorhom/bottom-sheet";
 
 import { DetailsType } from "./details.type";
@@ -15,9 +15,14 @@ import {
   TransactionSelect,
   Transactions,
 } from "@/components";
+import { useGoalRepository, useTransactionRepository } from "@/hooks";
+import { currencyFormat, mocks } from "@/utils";
+import dayjs from "dayjs";
 
 export default function Details() {
   const routeParams = useLocalSearchParams();
+  const { get } = useGoalRepository();
+  const { create, findByGoaldId } = useTransactionRepository();
 
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -36,11 +41,55 @@ export default function Details() {
   }
 
   function fetchDetails() {
-    console.log("fetchDetails");
+    try {
+      if (goalId) {
+        const goal = get(goalId);
+        const transactions = findByGoaldId(goalId);
+
+        if (!goal || !transactions) {
+          return router.back();
+        }
+
+        setGoal({
+          name: goal.name,
+          current: currencyFormat(goal.current),
+          total: currencyFormat(goal.total),
+          percentage: (goal.current / goal.total) * 100,
+          transactions: transactions.map((i) => ({
+            ...i,
+            date: dayjs(i.created_at).format("DD/MM/YYYY [às] HH:mm"),
+          })),
+        });
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function handleNewTransaction() {
-    console.log("handleNewTransaction");
+    try {
+      let amountAsNumber = Number(amount.replace(",", "."));
+      if (isNaN(amountAsNumber)) return Alert.alert("Erro", "Valor inválido.");
+
+      if (type === "down") {
+        amountAsNumber = amountAsNumber * -1;
+      }
+
+      create({ amount: amountAsNumber, goalId });
+
+      Alert.alert("Sucesso", "Transação registrada!");
+
+      handleBottomSheetClose();
+      Keyboard.dismiss();
+      setAmount("");
+      setType("up");
+
+      fetchDetails();
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível cadastrar.");
+      console.log(error);
+    }
   }
 
   useEffect(() => {

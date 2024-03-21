@@ -13,7 +13,7 @@ export async function databaseInit(db: SQLiteDatabase) {
         CREATE TABLE IF NOT EXISTS transactions (
             id INTEGER PRIMARY KEY NOT NULL,
             goal_id INTEGER,
-            amout REAL NOT NULL,
+            amount REAL NOT NULL,
             created_at DEFAULT CURRENT_TIMESTAMP
         );
     `);

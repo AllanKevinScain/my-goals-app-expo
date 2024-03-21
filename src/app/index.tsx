@@ -7,12 +7,16 @@ import {
   Transactions,
 } from "@/components";
 import { GoalsType } from "@/components/goals/goals.type";
-import { TransactionType } from "@/components/transaction/transaction.type";
+import { TransactionType } from "@/components/transactions/transactions.type";
+import { useGoalRepository } from "@/hooks";
 import Bottom from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { Alert, Keyboard, View } from "react-native";
 
 export default function Home() {
+  const { create, listAll } = useGoalRepository();
+
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [goals, setGoals] = useState<GoalsType[]>([]);
   const [name, setName] = useState<string>("");
@@ -28,19 +32,42 @@ export default function Home() {
   }
 
   function handleDetails(id: string) {
-    console.log("handleDetails", id);
-  }
-
-  async function handleCreate() {
-    console.log("handleCreate");
+    router.navigate(`/details/${id}`);
   }
 
   async function fetchGoals() {
-    console.log("fetchGoals");
+    try {
+      const response = listAll();
+
+      setGoals(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function fetchTransactions() {
     console.log("fetchTransactions");
+  }
+
+  async function handleCreate() {
+    try {
+      const totalAsNumber = Number(total.toString().replace(",", "."));
+      if (isNaN(totalAsNumber)) return Alert.alert("Erro", "Valor inválido.");
+
+      create({ name, total: totalAsNumber });
+
+      Keyboard.dismiss();
+      handleBottomSheetClose();
+      Alert.alert("Sucesso", "Meta cadastrada!");
+
+      setName("");
+      setTotal("");
+
+      fetchGoals();
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível cadastrar.");
+      console.log(error);
+    }
   }
 
   useEffect(() => {
