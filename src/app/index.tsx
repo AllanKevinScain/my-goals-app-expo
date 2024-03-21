@@ -8,14 +8,16 @@ import {
 } from "@/components";
 import { GoalsType } from "@/components/goals/goals.type";
 import { TransactionType } from "@/components/transactions/transactions.type";
-import { useGoalRepository } from "@/hooks";
+import { useGoalRepository, useTransactionRepository } from "@/hooks";
 import Bottom from "@gorhom/bottom-sheet";
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Keyboard, View } from "react-native";
 
 export default function Home() {
   const { create, listAll } = useGoalRepository();
+  const { findLatest } = useTransactionRepository();
 
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [goals, setGoals] = useState<GoalsType[]>([]);
@@ -46,7 +48,18 @@ export default function Home() {
   }
 
   async function fetchTransactions() {
-    console.log("fetchTransactions");
+    try {
+      const res = findLatest();
+
+      setTransactions(
+        res.map((i) => ({
+          ...i,
+          date: dayjs(i.created_at).format("DD/MM/YYYY [às] HH:mm"),
+        }))
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function handleCreate() {
