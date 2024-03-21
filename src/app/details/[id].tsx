@@ -17,11 +17,15 @@ import {
 } from "@/components";
 
 export default function Details() {
+  const routeParams = useLocalSearchParams();
+
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [type, setType] = useState<"up" | "down">("up");
   const [goal, setGoal] = useState({} as DetailsType);
   const bottomSheetRef = useRef<Bottom>(null);
+
+  const goalId = Number(routeParams.id);
 
   function handleBottomSheetOpen() {
     bottomSheetRef.current?.expand();
